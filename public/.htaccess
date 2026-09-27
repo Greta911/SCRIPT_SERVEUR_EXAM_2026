@@ -9,10 +9,10 @@ RewriteRule ^ - [L]
 # --------------------------------------------
 # RÈGLES DE RÉ-ÉCRITURE
 
-# ROUTE POSTS.SHOW
+# ROUTE PROJECT.SHOW
 # PATTERN: /projects/id/slug
 # URL: ?projects=show&id=x
-RewriteRule ^projects\/([1-9][0-9]*)\/[a-z0-9]([a-z0-9\-]*[a-z0-9])*$ ?projects=show&id=$1 [L]
+RewriteRule ^projects\/([1-9][0-9]*)\/[a-z0-9]([a-z0-9\-]*[a-z0-9])*$ index.php?projects=show&id=$1 [QSA,L]
 
 # ROUTE USERS.LOGINFORM
 # PATTERN: /users/login-form
