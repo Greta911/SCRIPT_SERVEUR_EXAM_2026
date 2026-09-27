@@ -17,7 +17,7 @@ switch ($_GET['projects']):
 
     case 'addInsert':
         //Traitement de l'ajout d'un projet
-        ProjectsController\addInsertAction($connexion, $_POST);
+        ProjectsController\addInsertAction($connexion, $_POST, $_FILES);
         break;
 
     case 'editForm':
@@ -27,11 +27,12 @@ switch ($_GET['projects']):
 
     case 'editUpdate':
         //Traitement de la modification d'un projet
-        ProjectsController\editUpdateAction($connexion, (int)$_GET['id'], $_POST);
+        ProjectsController\editUpdateAction($connexion, (int)$_GET['id'], $_POST, $_FILES);
         break;
 
     case 'delete':
         //Traitement de la suppression d'un projet
+        $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
         ProjectsController\deleteAction($connexion, (int)$_GET['id']);
         break;
     //ROUTE LISTE DES PROJETS

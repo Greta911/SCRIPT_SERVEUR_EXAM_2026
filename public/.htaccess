@@ -29,7 +29,7 @@ RewriteRule ^projects/([1-9][0-9]*)/[a-z0-9-]+/edit/form\.html$ index.php?projec
 RewriteRule ^projects/([1-9][0-9]*)/[a-z0-9-]+/edit/update\.html$ index.php?projects=editUpdate&id=$1 [QSA,L]
 
 # SUPPRESSION D'UN PROJET
-RewriteRule ^projects/delete/([1-9][0-9]*)/[a-z0-9-]+\.html$ index.php?projects=delete&id=$1 [QSA,L]
+RewriteRule ^projets/delete/([0-9]+)/[a-zA-Z0-9-]+.html$ index.php?projects=delete&id=$1 [L,QSA]
 
 # ROUTE PROJECT.SHOW
 # PATTERN: /projects/id/slug

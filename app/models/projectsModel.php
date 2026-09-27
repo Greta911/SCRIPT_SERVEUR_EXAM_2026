@@ -62,17 +62,20 @@ function insertOne(PDO $connexion, array $data): bool
 function updateOne(PDO $connexion, int $id, array $data): bool
 {
     $sql = "UPDATE projets 
-            SET titre = :titre, texte = :texte, image = :image, creatif = :creatif 
+            SET titre = :titre, 
+                texte = :texte, 
+                image = :image, 
+                creatif = :creatif 
             WHERE id = :id;";
 
-    $stmt = $connexion->prepare($sql);
-    return $stmt->execute([
-        ':id'      => $id,
-        ':titre'   => $data['titre'],
-        ':texte'   => $data['texte'],
-        ':image'   => $data['image'],
-        ':creatif' => $data['creatif']
-    ]);
+    $rs = $connexion->prepare($sql);
+    $rs->bindValue(':titre', $data['titre'], PDO::PARAM_STR);
+    $rs->bindValue(':texte', $data['texte'], PDO::PARAM_STR);
+    $rs->bindValue(':image', $data['image'], PDO::PARAM_STR);
+    $rs->bindValue(':creatif', $data['creatif'], PDO::PARAM_INT);
+    $rs->bindValue(':id', $id, PDO::PARAM_INT);
+
+    return $rs->execute();
 }
 
 //DELETE

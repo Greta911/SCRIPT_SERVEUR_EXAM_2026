@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg navbar-dark fixed-top ct-navbar">
     <div class="container">
-        <a class="navbar-brand" href="index.html">
+        <a class="navbar-brand" href="projects">
             <svg class="ct-scissors" viewBox="0 0 24 24" aria-hidden="true">
                 <circle cx="6" cy="6" r="2.6"></circle>
                 <circle cx="6" cy="18" r="2.6"></circle>
@@ -25,7 +25,7 @@
                     <a class="nav-link" href="projects">Les projets</a>
                 </li>
                 <li class="nav-item">
-                    <a class="ct-btn ct-btn--primary ct-btn--sm" href="form.html">
+                    <a class="ct-btn ct-btn--primary ct-btn--sm" href="projects/add/form.html">
                         <svg class="ct-scissors" style="width:16px;height:16px" viewBox="0 0 24 24" aria-hidden="true">
                             <circle cx="6" cy="6" r="2.6"></circle>
                             <circle cx="6" cy="18" r="2.6"></circle>
