@@ -22,7 +22,7 @@
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav ml-auto align-items-lg-center">
                 <li class="nav-item active">
-                    <a class="nav-link" href="index.html">Les projets</a>
+                    <a class="nav-link" href="projects">Les projets</a>
                 </li>
                 <li class="nav-item">
                     <a class="ct-btn ct-btn--primary ct-btn--sm" href="form.html">

@@ -9,21 +9,32 @@ RewriteRule ^ - [L]
 # --------------------------------------------
 # RÈGLES DE RÉ-ÉCRITURE
 
+# ROUTE LISTE DES PROJETS ET INDEX
+# PATTERN: /projects -> index.php?projects=index
+RewriteRule ^projects/?$ index.php?projects=index [QSA,L]
+
+# Pagination des projets
+RewriteRule ^projects/page/([0-9]+)$ index.php?projects=index&page=$1 [QSA,L]
+
+# AJOUT D'UN PROJET
+# Formulaire d'ajout
+RewriteRule ^projects/add/form\.html$ index.php?projects=addForm [QSA,L]
+# Action d'insertion
+RewriteRule ^projects/add/insert\.html$ index.php?projects=addInsert [QSA,L]
+
+# MODIFICATION D'UN PROJET
+# Formulaire de modification
+RewriteRule ^projects/([1-9][0-9]*)/[a-z0-9-]+/edit/form\.html$ index.php?projects=editForm&id=$1 [QSA,L]
+# Action de mise à jour
+RewriteRule ^projects/([1-9][0-9]*)/[a-z0-9-]+/edit/update\.html$ index.php?projects=editUpdate&id=$1 [QSA,L]
+
+# SUPPRESSION D'UN PROJET
+RewriteRule ^projects/delete/([1-9][0-9]*)/[a-z0-9-]+\.html$ index.php?projects=delete&id=$1 [QSA,L]
+
 # ROUTE PROJECT.SHOW
 # PATTERN: /projects/id/slug
 # URL: ?projects=show&id=x
-RewriteRule ^projects\/([1-9][0-9]*)\/[a-z0-9]([a-z0-9\-]*[a-z0-9])*$ index.php?projects=show&id=$1 [QSA,L]
-
-# ROUTE USERS.LOGINFORM
-# PATTERN: /users/login-form
-# URL: ?users=login-form
-RewriteRule ^users\/login\-form$ ?users=login-form [L]
-
-# ROUTE USERS.LOGIN
-# PATTERN: /users/login
-# URL: ?users=login
-RewriteRule ^users\/login$ ?users=login [L]
-
+RewriteRule ^projects\/([1-9][0-9]*)\/[a-z0-9]([a-z0-9\-]*[a-z0-9])\.html$ index.php?projects=show&id=$1 [QSA,L]
 
 # --------------------------------------------
 # FALLBACK

@@ -10,7 +10,32 @@ switch ($_GET['projects']):
     case 'show':
         ProjectsController\showAction($connexion, (int)$_GET['id']);
         break;
+    case 'addForm':
+        //Affichage du formulaire d'ajout
+        ProjectsController\addFormAction($connexion);
+        break;
+
+    case 'addInsert':
+        //Traitement de l'ajout d'un projet
+        ProjectsController\addInsertAction($connexion, $_POST);
+        break;
+
+    case 'editForm':
+        //Affichage du formulaire de modification
+        ProjectsController\editFormAction($connexion, (int)$_GET['id']);
+        break;
+
+    case 'editUpdate':
+        //Traitement de la modification d'un projet
+        ProjectsController\editUpdateAction($connexion, (int)$_GET['id'], $_POST);
+        break;
+
+    case 'delete':
+        //Traitement de la suppression d'un projet
+        ProjectsController\deleteAction($connexion, (int)$_GET['id']);
+        break;
     //ROUTE LISTE DES PROJETS
+    case 'index':
     default:
         ProjectsController\indexAction($connexion);
         break;

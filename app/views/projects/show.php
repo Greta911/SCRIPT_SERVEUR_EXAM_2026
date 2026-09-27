@@ -14,8 +14,8 @@
              </p>
 
              <div class="mb-4">
-                 <a href="#" class="ct-btn ct-btn--primary">Éditer le projet</a>
-                 <a href="#" class="ct-btn ct-btn--danger" onclick="return confirm('Supprimer définitivement ce projet ?');">Supprimer le projet</a>
+                 <a href="projects/<?php echo $project['id']; ?>/<?php echo \Core\Helpers\slugify($project['titre']); ?>/edit/form.html" class="ct-btn ct-btn--primary">Éditer le projet</a>
+                 <a href="projets/delete/<?php echo $project['id']; ?>/<?php echo \Core\Helpers\slugify($project['titre']); ?>.html" class="ct-btn ct-btn--danger" onclick="return confirm('Supprimer définitivement ce projet ?');">Supprimer le projet</a>
              </div>
 
              <article class="ct-card">
