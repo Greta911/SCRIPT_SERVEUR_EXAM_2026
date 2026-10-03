@@ -24,8 +24,21 @@
                          <img class="img-fluid mb-3 mb-md-0" src="images/<?php echo $project['image']; ?>" alt="<?php echo $project['titre']; ?>" />
                      </div>
                      <div class="col-md-6">
-                         <p><?php echo nl2br($project['texte']); ?></p>
+                         <p class="lead" style="font-weight: 600"><?php echo nl2br($project['titre']); ?></p>
+                         <hr />
+                         <p>
+                             <?php echo nl2br($project['texte']); ?>
+                         </p>
+                         <hr />
+                         <?php if (!empty($projectTags)): ?>
+                             <ul class="ct-tags">
+                                 <?php foreach ($projectTags as $tag): ?>
+                                     <li><a class="ct-tag" href="#"><?= htmlspecialchars($tag['nom']) ?></a></li>
+                                 <?php endforeach; ?>
+                             </ul>
+                         <?php endif; ?>
                      </div>
+
                  </div>
              </article>
          </div>

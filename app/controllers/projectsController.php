@@ -6,11 +6,11 @@ use \PDO;
 use \App\Models\ProjectsModel;
 use \App\Models\CreatifsModel;
 
+include_once '../app/models/projectsModel.php';
 include_once '../app/models/creatifsModel.php';
+
 function indexAction(PDO $connexion): void
 {
-    include_once '../app/models/projectsModel.php';
-
     //Paramètres de pagination
     $limit = 10;
     $page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int)$_GET['page'] : 1;
@@ -23,7 +23,8 @@ function indexAction(PDO $connexion): void
     $totalProjects = ProjectsModel\countAll($connexion);
     $totalPages = (int) ceil($totalProjects / $limit);
 
-    global $content, $title;
+    global $content, $title, $showHero;
+    $showHero = true;
     ob_start();
     include '../app/views/projects/index.php';
     $content = ob_get_clean();
@@ -32,16 +33,18 @@ function indexAction(PDO $connexion): void
 
 function showAction(PDO $connexion, int $id)
 {
-    include_once '../app/models/projectsModel.php';
     $project = ProjectsModel\findOneById($connexion, $id);
+    $projectTags = ProjectsModel\findTagsByProjectId($connexion, $id); //Liste des tags du projet
 
     if (!$project) {
         header('Location: ' . PUBLIC_BASE_URL);
         exit();
     }
 
-    global $content, $title;
+    global $content, $title, $showHero;
+    $showHero = true;
     $title = $project['titre'];
+
     ob_start();
     include '../app/views/projects/show.php';
     $content = ob_get_clean();
@@ -53,8 +56,6 @@ function showAction(PDO $connexion, int $id)
 //Affiche le formulaire
 function addFormAction(PDO $connexion)
 {
-    include_once '../app/models/projectsModel.php';
-
     $project = [
         'id' => null,
         'titre' => '',
@@ -63,9 +64,17 @@ function addFormAction(PDO $connexion)
         'creatif' => null
     ];
 
-    include_once '../app/models/creatifsModel.php';
+    $isEdit = false;
+    $slug = '';
+    $formAction = "projects/add/insert.html";
+
+
     $creatifs = CreatifsModel\findAll($connexion);
-    global $content, $title;
+    $tags = ProjectsModel\findAllTags($connexion); // Tous les tags
+    $projectTagIds = []; // Aucun tag coché au départ
+
+    global $content, $title, $showHero;
+    $showHero = false;
     $title = "Ajouter un projet";
 
     ob_start();
@@ -76,9 +85,7 @@ function addFormAction(PDO $connexion)
 //Traite l'insertion puis redirige vers l'accueil
 function addInsertAction(PDO $connexion, array $data, array $files)
 {
-    include_once '../app/models/projectsModel.php';
-
-    // Gestion basique du nom d'image
+    //Gestion basique du nom d'image
     $imageName = 'default.jpg';
     if (!empty($files['image']['name'])) {
         $imageName = $files['image']['name'];
@@ -92,9 +99,12 @@ function addInsertAction(PDO $connexion, array $data, array $files)
         'creatif' => (int)$data['category_id']
     ];
 
-    ProjectsModel\insertOne($connexion, $projectData);
 
-    // Redirection vers l'accueil
+    $tagIds = $data['tags'] ?? []; //Récupère le tableau des cases cochées (ou tableau vide si rien coché)
+
+    ProjectsModel\insertOne($connexion, $projectData, $tagIds);
+
+    //Redirection vers l'accueil
     header('Location: ' . PUBLIC_BASE_URL);
     exit();
 }
@@ -102,9 +112,16 @@ function addInsertAction(PDO $connexion, array $data, array $files)
 //Affiche le formulaire d'édition
 function editFormAction(PDO $connexion, int $id)
 {
-    include_once '../app/models/projectsModel.php';
+
     $project = ProjectsModel\findOneById($connexion, $id);
     $creatifs = CreatifsModel\findAll($connexion);
+
+    $tags = ProjectsModel\findAllTags($connexion);
+    $projectTagIds = ProjectsModel\findTagIdsByProjectId($connexion, $id); //Tags déjà associés
+
+    $isEdit = true;
+    $slug = \Core\Helpers\slugify($project['titre']);
+    $formAction = "projects/{$project['id']}/{$slug}/edit/update.html";
 
     global $content, $title;
     $title = "Éditer le projet";
@@ -117,8 +134,7 @@ function editFormAction(PDO $connexion, int $id)
 //Traite la modification puis redirige vers l'accueil
 function editUpdateAction(PDO $connexion, int $id, array $data, array $files)
 {
-    include_once '../app/models/projectsModel.php';
-    // Récupérer le projet actuel pour conserver l'image si aucune nouvelle n'est envoyée
+    //Récupérer le projet actuel pour conserver l'image si aucune nouvelle n'est envoyée
     $currentProject = ProjectsModel\findOneById($connexion, $id);
     $imageName = $currentProject['image'];
 
@@ -133,7 +149,10 @@ function editUpdateAction(PDO $connexion, int $id, array $data, array $files)
         'image'   => $imageName,
         'creatif' => (int)$data['category_id']
     ];
-    ProjectsModel\updateOne($connexion, $id, $projectData);
+
+    $tagIds = $data['tags'] ?? [];
+
+    ProjectsModel\updateOne($connexion, $id, $projectData, $tagIds);
 
     header('Location: ' . PUBLIC_BASE_URL);
     exit();
@@ -144,19 +163,19 @@ function deleteAction(PDO $connexion, int $id)
 {
 
     include_once '../app/models/projectsModel.php';
+    try {
+        //Supprimer le projet via le modèle (qui supprime aussi les tags liés)
+        $success = ProjectsModel\deleteOne($connexion, $id);
 
-    //Supprimer d'abord les associations du projet dans la table de jonction
-    $sqlTags = "DELETE FROM projets_has_tags 
-                WHERE projet = :id;";
-    $stmtTags = $connexion->prepare($sqlTags);
-    $stmtTags->bindValue(':id', $id, PDO::PARAM_INT);
-    $stmtTags->execute();
+        if (!$success) {
+            //message d'erreur en session
+            $_SESSION['error'] = "Impossible de supprimer le projet.";
+        }
+    } catch (\PDOException $e) {
+        //Enregistrement du log d'erreur si la suppression échoue
+        error_log($e->getMessage());
+    }
 
-    //Supprimer ensuite le projet
-    $sqlProject = "DELETE FROM projets 
-                   WHERE id = :id;";
-    $stmtProject = $connexion->prepare($sqlProject);
-    $stmtProject->bindValue(':id', $id, PDO::PARAM_INT);
-
-    return $stmtProject->execute();
+    header('Location: ' . PUBLIC_BASE_URL . '/projects');
+    exit();
 }

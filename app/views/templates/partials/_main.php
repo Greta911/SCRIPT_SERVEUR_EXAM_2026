@@ -3,8 +3,6 @@
         <!-- Colonne principale -->
         <div class="col-lg-8">
             <?php echo $content ?>
-
-
         </div>
         <!-- Colonne latérale -->
         <?php include '../app/views/templates/partials/_aside.php' ?>

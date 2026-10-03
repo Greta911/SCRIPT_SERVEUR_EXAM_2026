@@ -15,7 +15,7 @@
                 </a>
             </div>
             <div class="col-md-8">
-                <h3><a href="projects/<?php echo $project['id']; ?>/<?php echo \Core\Helpers\slugify($project['titre']); ?>"><?php echo $project['titre']; ?></a></h3>
+                <h3><a href="projects/<?php echo $project['id']; ?>/<?php echo \Core\Helpers\slugify($project['titre']); ?>.html"><?php echo $project['titre']; ?></a></h3>
                 <p class="ct-byline">par <?php echo $project['creatifPseudo']; ?></a> ·
                     <span><?php echo \Core\Helpers\dateFormator($project['dateCreation'], 'd'); ?></span>
                     <span><?php echo \Core\Helpers\dateFormator($project['dateCreation'], 'M'); ?></span>
