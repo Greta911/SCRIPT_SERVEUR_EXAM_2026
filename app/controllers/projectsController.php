@@ -5,9 +5,12 @@ namespace App\Controllers\ProjectsController;
 use \PDO;
 use \App\Models\ProjectsModel;
 use \App\Models\CreatifsModel;
+use \App\Models\TagsModel;
 
 include_once '../app/models/projectsModel.php';
 include_once '../app/models/creatifsModel.php';
+include_once '../app/models/tagsModel.php';
+
 
 function indexAction(PDO $connexion): void
 {
@@ -20,6 +23,8 @@ function indexAction(PDO $connexion): void
     $offset = ($page - 1) * $limit;
     //Récupération des projets et du total
     $projects = ProjectsModel\findAll($connexion, $limit, $offset);
+    $creatifs = CreatifsModel\findAll($connexion);
+    $tags = TagsModel\findAll($connexion);
     $totalProjects = ProjectsModel\countAll($connexion);
     $totalPages = (int) ceil($totalProjects / $limit);
 
@@ -28,12 +33,15 @@ function indexAction(PDO $connexion): void
     ob_start();
     include '../app/views/projects/index.php';
     $content = ob_get_clean();
+    include '../app/views/templates/default.php';
 }
 
 
 function showAction(PDO $connexion, int $id)
 {
     $project = ProjectsModel\findOneById($connexion, $id);
+    $creatifs = CreatifsModel\findAll($connexion);
+    $tags = TagsModel\findAll($connexion);
     $projectTags = ProjectsModel\findTagsByProjectId($connexion, $id); //Liste des tags du projet
 
     if (!$project) {
@@ -48,6 +56,7 @@ function showAction(PDO $connexion, int $id)
     ob_start();
     include '../app/views/projects/show.php';
     $content = ob_get_clean();
+    include '../app/views/templates/default.php';
 }
 
 
@@ -80,6 +89,7 @@ function addFormAction(PDO $connexion)
     ob_start();
     include '../app/views/projects/form.php';
     $content = ob_get_clean();
+    include '../app/views/templates/default.php';
 }
 
 //Traite l'insertion puis redirige vers l'accueil
@@ -129,6 +139,7 @@ function editFormAction(PDO $connexion, int $id)
     ob_start();
     include '../app/views/projects/form.php';
     $content = ob_get_clean();
+    include '../app/views/templates/default.php';
 }
 
 //Traite la modification puis redirige vers l'accueil

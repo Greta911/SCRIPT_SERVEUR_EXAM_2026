@@ -10,7 +10,7 @@
          <div class="col-lg-12">
              <h1><?php echo $project['titre']; ?></h1>
              <p class="ct-byline">par <a href="#"><?php echo $project['creatifPseudo']; ?></a> ·
-                 <span><?php echo \Core\Helpers\dateFormator($project['dateCreation'], 'd/m/Y'); ?></span>
+                 <span><?php echo \Core\Helpers\dateFormator($project['dateCreation']); ?></span>
              </p>
 
              <div class="mb-4">

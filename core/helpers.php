@@ -2,9 +2,12 @@
 
 namespace Core\Helpers;
 
-function dateFormator(string $date, string $format = "d/m/Y"): string
+function dateFormator(string $date, string $format = "j F Y"): string
 {
-    return date($format, strtotime($date));
+    $englishMonths = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    $frenchMonths  = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+    $formattedDate = date($format, strtotime($date));
+    return str_replace($englishMonths, $frenchMonths, $formattedDate);
 }
 
 
