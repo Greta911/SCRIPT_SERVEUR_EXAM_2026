@@ -4,8 +4,8 @@ use App\Controllers\ProjectsController;
 
 include_once "../app/controllers/projectsController.php";
 
-
-switch ($_GET['projects']):
+$action = $_GET['projects'] ?? 'index';
+switch ($action):
         //ROUTE DETAILS D'UN PROJET 
     case 'show':
         ProjectsController\showAction($connexion, (int)$_GET['id']);
@@ -32,7 +32,7 @@ switch ($_GET['projects']):
 
     case 'delete':
         //Traitement de la suppression d'un projet
-        $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+        $id = (int)($_GET['id'] ?? 0);
         ProjectsController\deleteAction($connexion, (int)$_GET['id']);
         break;
     //ROUTE LISTE DES PROJETS

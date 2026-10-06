@@ -230,22 +230,6 @@ README.md
 <files>
 This section contains the contents of the repository's files.
 
-<file path="app/models/tagsModel.php">
-<?php
-
-namespace App\Models\TagsModel;
-
-use \PDO;
-
-function findAll(PDO $connexion): array
-{
-    $sql = "SELECT * 
-            FROM tags 
-            ORDER BY nom ASC;";
-    return $connexion->query($sql)->fetchAll(PDO::FETCH_ASSOC);
-}
-</file>
-
 <file path="app/config/params-example.php">
 <?php
 
@@ -288,44 +272,20 @@ function findAll(PDO $connexion): array
 }
 </file>
 
-<file path="app/views/templates/partials/_aside.php">
+<file path="app/models/tagsModel.php">
 <?php
 
-    /** @var array $creatifs
-     * @var array $tags
- 
-     */
+namespace App\Models\TagsModel;
 
-    ?>
-   <div class="col-lg-4">
-       <!-- Widget Créa'tifs -->
-       <div class="ct-side-card">
-           <h5 class="ct-side-card__head">Les créa'tifs</h5>
-           <div class="ct-side-card__body">
-               <ul class="ct-creatif-list">
-                   <?php foreach ($creatifs as $creatif): ?>
-                       <li>
-                           <img class="ct-avatar" src="images/<?php echo $creatif['image']; ?>" alt="<?= htmlspecialchars($creatif['pseudo']); ?>" />
-                           <a href="?creative=<?= $creatif['id']; ?>"><?= htmlspecialchars($creatif['pseudo']); ?></a>
-                           <span class="ct-count">4</span>
-                       </li>
-                   <?php endforeach; ?>
-               </ul>
-           </div>
-       </div>
+use \PDO;
 
-       <!-- Widget Tags -->
-       <div class="ct-side-card">
-           <h5 class="ct-side-card__head">Tags</h5>
-           <div class="ct-side-card__body">
-               <ul class="ct-tags">
-                   <?php foreach ($tags as $tag): ?>
-                       <li><a class="ct-tag" href="?tag=<?= $tag['id']; ?>"><?= htmlspecialchars($tag['nom']); ?></a></li>
-                   <?php endforeach; ?>
-               </ul>
-           </div>
-       </div>
-   </div>
+function findAll(PDO $connexion): array
+{
+    $sql = "SELECT * 
+            FROM tags 
+            ORDER BY nom ASC;";
+    return $connexion->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+}
 </file>
 
 <file path="app/views/templates/partials/_footer.php">
@@ -380,62 +340,6 @@ try {
     $connexion = new PDO('mysql:host=' . DB_HOST . ';dbname=' . DB_NAME, DB_USER, DB_PWD);
 } catch (PDOException $e) {
     echo $e->getMessage();
-}
-</file>
-
-<file path="core/helpers.php">
-<?php
-
-namespace Core\Helpers;
-
-function dateFormator(string $date, string $format = "j F Y"): string
-{
-    $englishMonths = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-    $frenchMonths  = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
-    $formattedDate = date($format, strtotime($date));
-    return str_replace($englishMonths, $frenchMonths, $formattedDate);
-}
-
-
-function slugify(string $text): string
-{
-    // replace non letter or digits by -   
-    $text2 = preg_replace('~[^\\pL\d]+~u', '-', $text);
-
-    // unset $text to free up space
-    unset($text);
-    // trim   
-    $text2 = trim($text2, '-');
-
-    // transliterate   
-    $text2 = iconv('utf-8', 'us-ascii//TRANSLIT', $text2);
-
-    // lowercase
-    $text2 = strtolower($text2);
-
-    // remove unwanted characters
-    $text = preg_replace('~[^-\w]+~', '', $text2);
-
-    // unset $text2 to free up space
-    unset($text2);
-
-    if (empty($text)) {
-        return 'n-a';
-    }
-    return $text;
-}
-
-function truncate(string $text, $limit = 100)
-{
-    if (strlen($text) <= $limit) return $text;
-
-
-    // Coupe à la limite
-    $text = substr($text, 0, $limit);
-    // Recherche la position du dernier espace dans la chaîne tronquée
-    $last_space = strrpos($text, ' ');
-    // Recoupe la chaîne à cet espace
-    return substr($text, 0, $last_space) . '...';
 }
 </file>
 
@@ -64152,6 +64056,46 @@ require_once '../app/views/templates/default.php';
 </div>
 </file>
 
+<file path="app/views/templates/partials/_aside.php">
+<?php
+
+    /** @var array $creatifs
+     * @var array $tags
+ 
+     */
+
+    ?>
+   <div class="col-lg-4">
+       <!-- Widget Créa'tifs -->
+       <div class="ct-side-card">
+           <h5 class="ct-side-card__head">Les créa'tifs</h5>
+           <div class="ct-side-card__body">
+               <ul class="ct-creatif-list">
+                   <?php foreach ($creatifs as $creatif): ?>
+                       <li>
+                           <img class="ct-avatar" src="images/<?php echo $creatif['image']; ?>" alt="<?= htmlspecialchars($creatif['pseudo']); ?>" />
+                           <a href="?creative=<?= $creatif['id']; ?>"><?= htmlspecialchars($creatif['pseudo']); ?></a>
+                           <span class="ct-count">4</span>
+                       </li>
+                   <?php endforeach; ?>
+               </ul>
+           </div>
+       </div>
+
+       <!-- Widget Tags -->
+       <div class="ct-side-card">
+           <h5 class="ct-side-card__head">Tags</h5>
+           <div class="ct-side-card__body">
+               <ul class="ct-tags">
+                   <?php foreach ($tags as $tag): ?>
+                       <li><a class="ct-tag" href="?tag=<?= $tag['id']; ?>"><?= htmlspecialchars($tag['nom']); ?></a></li>
+                   <?php endforeach; ?>
+               </ul>
+           </div>
+       </div>
+   </div>
+</file>
+
 <file path="app/views/templates/partials/_head.php">
 <head>
     <meta charset="utf-8" />
@@ -64194,10 +64138,60 @@ require_once '../app/views/templates/default.php';
 define('PUBLIC_BASE_URL', $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']));
 </file>
 
-<file path="app/routers/index.php">
+<file path="core/helpers.php">
 <?php
 
-include_once '../app/routers/projects.php';
+namespace Core\Helpers;
+
+function dateFormator(string $date, string $format = "j F Y"): string
+{
+    $englishMonths = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    $frenchMonths  = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+    $formattedDate = date($format, strtotime($date));
+    return str_replace($englishMonths, $frenchMonths, $formattedDate);
+}
+
+
+function slugify(string $text): string
+{
+    // replace non letter or digits by -   
+    $text2 = preg_replace('~[^\\pL\d]+~u', '-', $text);
+
+    // unset $text to free up space
+    unset($text);
+    // trim   
+    $text2 = trim($text2, '-');
+
+    // transliterate   
+    $text2 = iconv('utf-8', 'us-ascii//TRANSLIT', $text2);
+
+    // lowercase
+    $text2 = strtolower($text2);
+
+    // remove unwanted characters
+    $text = preg_replace('~[^-\w]+~', '', $text2);
+
+    // unset $text2 to free up space
+    unset($text2);
+
+    if (empty($text)) {
+        return 'n-a';
+    }
+    return $text;
+}
+
+function truncate(string $text, $limit = 100)
+{
+    if (strlen($text) <= $limit) return $text;
+
+
+    // Coupe à la limite
+    $text = substr($text, 0, $limit);
+    // Recherche la position du dernier espace dans la chaîne tronquée
+    $last_space = strrpos($text, ' ');
+    // Recoupe la chaîne à cet espace
+    return substr($text, 0, $last_space) . '...';
+}
 </file>
 
 <file path="app/routers/projects.php">
@@ -64207,8 +64201,8 @@ use App\Controllers\ProjectsController;
 
 include_once "../app/controllers/projectsController.php";
 
-
-switch ($_GET['projects']):
+$action = $_GET['projects'] ?? 'index';
+switch ($action):
         //ROUTE DETAILS D'UN PROJET 
     case 'show':
         ProjectsController\showAction($connexion, (int)$_GET['id']);
@@ -64235,7 +64229,7 @@ switch ($_GET['projects']):
 
     case 'delete':
         //Traitement de la suppression d'un projet
-        $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+        $id = (int)($_GET['id'] ?? 0);
         ProjectsController\deleteAction($connexion, (int)$_GET['id']);
         break;
     //ROUTE LISTE DES PROJETS
@@ -64244,55 +64238,6 @@ switch ($_GET['projects']):
         ProjectsController\indexAction($connexion);
         break;
 endswitch;
-</file>
-
-<file path="app/views/projects/show.php">
-<?php
-
-    /** @var array $project */
-
-    ?>
-
- <div class="container" style="margin-top: 2.5rem">
-     <div class="row">
-         <!-- Colonne principale -->
-         <div class="col-lg-12">
-             <h1><?php echo $project['titre']; ?></h1>
-             <p class="ct-byline">par <a href="#"><?php echo $project['creatifPseudo']; ?></a> ·
-                 <span><?php echo \Core\Helpers\dateFormator($project['dateCreation']); ?></span>
-             </p>
-
-             <div class="mb-4">
-                 <a href="projects/<?php echo $project['id']; ?>/<?php echo \Core\Helpers\slugify($project['titre']); ?>/edit/form.html" class="ct-btn ct-btn--primary">Éditer le projet</a>
-                 <a href="projets/delete/<?php echo $project['id']; ?>/<?php echo \Core\Helpers\slugify($project['titre']); ?>.html" class="ct-btn ct-btn--danger" onclick="return confirm('Supprimer définitivement ce projet ?');">Supprimer le projet</a>
-             </div>
-
-             <article class="ct-card">
-                 <div class="row">
-                     <div class="col-md-6">
-                         <img class="img-fluid mb-3 mb-md-0" src="images/<?php echo $project['image']; ?>" alt="<?php echo $project['titre']; ?>" />
-                     </div>
-                     <div class="col-md-6">
-                         <p class="lead" style="font-weight: 600"><?php echo nl2br($project['titre']); ?></p>
-                         <hr />
-                         <p>
-                             <?php echo nl2br($project['texte']); ?>
-                         </p>
-                         <hr />
-                         <?php if (!empty($projectTags)): ?>
-                             <ul class="ct-tags">
-                                 <?php foreach ($projectTags as $tag): ?>
-                                     <li><a class="ct-tag" href="#"><?= htmlspecialchars($tag['nom']) ?></a></li>
-                                 <?php endforeach; ?>
-                             </ul>
-                         <?php endif; ?>
-                     </div>
-
-                 </div>
-             </article>
-         </div>
-     </div>
- </div>
 </file>
 
 <file path="app/views/templates/partials/_main.php">
@@ -64353,57 +64298,59 @@ endswitch;
 </nav>
 </file>
 
-<file path="app/views/projects/index.php">
+<file path="app/routers/index.php">
 <?php
 
-/** @var array $projects
- * @var int $totalPages
- * @var int $page
- */
+include_once '../app/routers/projects.php';
+</file>
 
-?>
-<?php foreach ($projects as $project): ?>
-    <article class="ct-card">
-        <div class="row">
-            <div class="col-md-4">
-                <a href="projects/<?php echo $project['id']; ?>/<?php echo \Core\Helpers\slugify($project['titre']); ?>">
-                    <img class="img-fluid mb-3 mb-md-0" src="images/<?php echo $project['image']; ?>" alt="<?php echo $project['titre']; ?>" />
-                </a>
-            </div>
-            <div class="col-md-8">
-                <h3><a href="projects/<?php echo $project['id']; ?>/<?php echo \Core\Helpers\slugify($project['titre']); ?>.html"><?php echo $project['titre']; ?></a></h3>
-                <p class="ct-byline">par <?php echo $project['creatifPseudo']; ?></a> ·
-                    <span><?php echo \Core\Helpers\dateFormator($project['dateCreation']); ?></span>
-                </p>
-                <p><?php echo \Core\Helpers\truncate($project['texte']); ?></p>
-                <a class="ct-btn ct-btn--primary ct-btn--sm" href="projects/<?php echo $project['id']; ?>/<?php echo \Core\Helpers\slugify($project['titre']); ?>.html">Voir le projet</a>
-            </div>
-        </div>
-    </article>
-<?php endforeach; ?>
+<file path="app/views/projects/show.php">
+<?php
 
-<!-- Pagination : 10 projets par page -->
-<?php if (isset($totalPages) && $totalPages > 1): ?>
-    <nav aria-label="Navigation entre les pages de projets">
-        <ul class="pagination ct-pagination" style="justify-content: center">
-            <?php if ($page > 1): ?>
-                <li class="page-item">
-                    <a class="page-link" href="projects/page/<?php echo $page - 1; ?>">Précédent</a>
-                </li>
-            <?php endif; ?>
-            <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                <li class="page-item active <?php echo ($i === $page) ? 'active' : ''; ?>">
-                    <a class="page-link" href="projects/page/<?php echo $i; ?>"><?php echo $i; ?></a>
-                </li>
-            <?php endfor; ?>
-            <?php if ($page < $totalPages): ?>
-                <li class="page-item">
-                    <a class="page-link" href="projects/page/<?php echo $page + 1; ?>">Suivant</a>
-                </li>
-            <?php endif; ?>
-        </ul>
-    </nav>
-<?php endif; ?>
+    /** @var array $project */
+
+    ?>
+
+ <div class="container" style="margin-top: 2.5rem">
+     <div class="row">
+         <!-- Colonne principale -->
+         <div class="col-lg-12">
+             <h1><?php echo $project['titre']; ?></h1>
+             <p class="ct-byline">par <a href="#"><?php echo $project['creatifPseudo']; ?></a> ·
+                 <span><?php echo \Core\Helpers\dateFormator($project['dateCreation']); ?></span>
+             </p>
+
+             <div class="mb-4">
+                 <a href="projects/<?php echo $project['id']; ?>/<?php echo \Core\Helpers\slugify($project['titre']); ?>/edit/form.html" class="ct-btn ct-btn--primary">Éditer le projet</a>
+                 <a href="projets/delete/<?php echo $project['id']; ?>/<?php echo \Core\Helpers\slugify($project['titre']); ?>.html" class="ct-btn ct-btn--danger" onclick="return confirm('Supprimer définitivement ce projet ?');">Supprimer le projet</a>
+             </div>
+
+             <article class="ct-card">
+                 <div class="row">
+                     <div class="col-md-6">
+                         <img class="img-fluid mb-3 mb-md-0" src="images/<?php echo $project['image']; ?>" alt="<?php echo $project['titre']; ?>" />
+                     </div>
+                     <div class="col-md-6">
+                         <p class="lead" style="font-weight: 600"><?php echo nl2br($project['titre']); ?></p>
+                         <hr />
+                         <p>
+                             <?php echo nl2br($project['texte']); ?>
+                         </p>
+                         <hr />
+                         <?php if (!empty($projectTags)): ?>
+                             <ul class="ct-tags">
+                                 <?php foreach ($projectTags as $tag): ?>
+                                     <li><a class="ct-tag" href="#"><?= htmlspecialchars($tag['nom']) ?></a></li>
+                                 <?php endforeach; ?>
+                             </ul>
+                         <?php endif; ?>
+                     </div>
+
+                 </div>
+             </article>
+         </div>
+     </div>
+ </div>
 </file>
 
 <file path="public/.htaccess">
@@ -64449,201 +64396,6 @@ RewriteRule ^projects\/([1-9][0-9]*)\/[a-z0-9]([a-z0-9\-]*[a-z0-9])\.html$ index
 # FALLBACK
 # Toute autre URL non prise en charge par une route ci-dessus part vers le front controller
 RewriteRule ^ index.php [L]
-</file>
-
-<file path="app/controllers/projectsController.php">
-<?php
-
-namespace App\Controllers\ProjectsController;
-
-use \PDO;
-use \App\Models\ProjectsModel;
-use \App\Models\CreatifsModel;
-use \App\Models\TagsModel;
-
-include_once '../app/models/projectsModel.php';
-include_once '../app/models/creatifsModel.php';
-include_once '../app/models/tagsModel.php';
-
-
-function indexAction(PDO $connexion): void
-{
-    //Paramètres de pagination
-    $limit = 10;
-    $page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int)$_GET['page'] : 1;
-    if ($page < 1) {
-        $page = 1;
-    }
-    $offset = ($page - 1) * $limit;
-    //Récupération des projets et du total
-    $projects = ProjectsModel\findAll($connexion, $limit, $offset);
-    $creatifs = CreatifsModel\findAll($connexion);
-    $tags = TagsModel\findAll($connexion);
-    $totalProjects = ProjectsModel\countAll($connexion);
-    $totalPages = (int) ceil($totalProjects / $limit);
-
-    global $content, $title, $showHero;
-    $showHero = true;
-    ob_start();
-    include '../app/views/projects/index.php';
-    $content = ob_get_clean();
-    include '../app/views/templates/default.php';
-}
-
-
-function showAction(PDO $connexion, int $id)
-{
-    $project = ProjectsModel\findOneById($connexion, $id);
-    $creatifs = CreatifsModel\findAll($connexion);
-    $tags = TagsModel\findAll($connexion);
-    $projectTags = ProjectsModel\findTagsByProjectId($connexion, $id); //Liste des tags du projet
-
-    if (!$project) {
-        header('Location: ' . PUBLIC_BASE_URL);
-        exit();
-    }
-
-    global $content, $title, $showHero;
-    $showHero = true;
-    $title = $project['titre'];
-
-    ob_start();
-    include '../app/views/projects/show.php';
-    $content = ob_get_clean();
-    include '../app/views/templates/default.php';
-}
-
-
-//-----------------CRUD-------------
-
-//Affiche le formulaire
-function addFormAction(PDO $connexion)
-{
-    $project = [
-        'id' => null,
-        'titre' => '',
-        'texte' => '',
-        'image' => '',
-        'creatif' => null
-    ];
-
-    $isEdit = false;
-    $slug = '';
-    $formAction = "projects/add/insert.html";
-
-
-    $creatifs = CreatifsModel\findAll($connexion);
-    $tags = ProjectsModel\findAllTags($connexion); // Tous les tags
-    $projectTagIds = []; // Aucun tag coché au départ
-
-    global $content, $title, $showHero;
-    $showHero = false;
-    $title = "Ajouter un projet";
-
-    ob_start();
-    include '../app/views/projects/form.php';
-    $content = ob_get_clean();
-    include '../app/views/templates/default.php';
-}
-
-//Traite l'insertion puis redirige vers l'accueil
-function addInsertAction(PDO $connexion, array $data, array $files)
-{
-    //Gestion basique du nom d'image
-    $imageName = 'default.jpg';
-    if (!empty($files['image']['name'])) {
-        $imageName = $files['image']['name'];
-        move_uploaded_file($files['image']['tmp_name'], 'images/' . $imageName);
-    }
-
-    $projectData = [
-        'titre'   => $data['title'],
-        'texte'   => $data['text'],
-        'image'   => $imageName,
-        'creatif' => (int)$data['category_id']
-    ];
-
-
-    $tagIds = $data['tags'] ?? []; //Récupère le tableau des cases cochées (ou tableau vide si rien coché)
-
-    ProjectsModel\insertOne($connexion, $projectData, $tagIds);
-
-    //Redirection vers l'accueil
-    header('Location: ' . PUBLIC_BASE_URL);
-    exit();
-}
-
-//Affiche le formulaire d'édition
-function editFormAction(PDO $connexion, int $id)
-{
-
-    $project = ProjectsModel\findOneById($connexion, $id);
-    $creatifs = CreatifsModel\findAll($connexion);
-
-    $tags = ProjectsModel\findAllTags($connexion);
-    $projectTagIds = ProjectsModel\findTagIdsByProjectId($connexion, $id); //Tags déjà associés
-
-    $isEdit = true;
-    $slug = \Core\Helpers\slugify($project['titre']);
-    $formAction = "projects/{$project['id']}/{$slug}/edit/update.html";
-
-    global $content, $title;
-    $title = "Éditer le projet";
-
-    ob_start();
-    include '../app/views/projects/form.php';
-    $content = ob_get_clean();
-    include '../app/views/templates/default.php';
-}
-
-//Traite la modification puis redirige vers l'accueil
-function editUpdateAction(PDO $connexion, int $id, array $data, array $files)
-{
-    //Récupérer le projet actuel pour conserver l'image si aucune nouvelle n'est envoyée
-    $currentProject = ProjectsModel\findOneById($connexion, $id);
-    $imageName = $currentProject['image'];
-
-    if (!empty($files['image']['name'])) {
-        $imageName = $files['image']['name'];
-        move_uploaded_file($files['image']['tmp_name'], 'images/' . $imageName);
-    }
-
-    $projectData = [
-        'titre'   => $data['title'],
-        'texte'   => $data['text'],
-        'image'   => $imageName,
-        'creatif' => (int)$data['category_id']
-    ];
-
-    $tagIds = $data['tags'] ?? [];
-
-    ProjectsModel\updateOne($connexion, $id, $projectData, $tagIds);
-
-    header('Location: ' . PUBLIC_BASE_URL);
-    exit();
-}
-
-//Supprime un projet puis redirige
-function deleteAction(PDO $connexion, int $id)
-{
-
-    include_once '../app/models/projectsModel.php';
-    try {
-        //Supprimer le projet via le modèle (qui supprime aussi les tags liés)
-        $success = ProjectsModel\deleteOne($connexion, $id);
-
-        if (!$success) {
-            //message d'erreur en session
-            $_SESSION['error'] = "Impossible de supprimer le projet.";
-        }
-    } catch (\PDOException $e) {
-        //Enregistrement du log d'erreur si la suppression échoue
-        error_log($e->getMessage());
-    }
-
-    header('Location: ' . PUBLIC_BASE_URL . '/projects');
-    exit();
-}
 </file>
 
 <file path="app/models/projectsModel.php">
@@ -64693,14 +64445,6 @@ function findOneById(PDO $connexion, int $id)
     return $rs->fetch(PDO::FETCH_ASSOC);
 }
 
-//Récupère la liste de TOUS les tags disponibles pour le formulaire
-function findAllTags(PDO $connexion): array
-{
-    $sql = "SELECT * 
-            FROM tags 
-            ORDER BY nom ASC;";
-    return $connexion->query($sql)->fetchAll(PDO::FETCH_ASSOC);
-}
 
 //Récupère les IDs des tags associés à un projet donné
 function findTagIdsByProjectId(PDO $connexion, int $projectId): array
@@ -64819,6 +64563,254 @@ function deleteOne(PDO $connexion, int $id): bool
     $rsProject->bindValue(':id', $id, PDO::PARAM_INT);
 
     return $rsProject->execute();
+}
+</file>
+
+<file path="app/views/projects/index.php">
+<?php
+
+/** @var array $projects
+ * @var int $totalPages
+ * @var int $page
+ */
+
+?>
+<?php foreach ($projects as $project): ?>
+    <article class="ct-card">
+        <div class="row">
+            <div class="col-md-4">
+                <a href="projects/<?php echo $project['id']; ?>/<?php echo \Core\Helpers\slugify($project['titre']); ?>">
+                    <img class="img-fluid mb-3 mb-md-0" src="images/<?php echo $project['image']; ?>" alt="<?php echo $project['titre']; ?>" />
+                </a>
+            </div>
+            <div class="col-md-8">
+                <h3><a href="projects/<?php echo $project['id']; ?>/<?php echo \Core\Helpers\slugify($project['titre']); ?>.html"><?php echo $project['titre']; ?></a></h3>
+                <p class="ct-byline">par <?php echo $project['creatifPseudo']; ?></a> ·
+                    <span><?php echo \Core\Helpers\dateFormator($project['dateCreation']); ?></span>
+                </p>
+                <p><?php echo \Core\Helpers\truncate($project['texte']); ?></p>
+                <a class="ct-btn ct-btn--primary ct-btn--sm" href="projects/<?php echo $project['id']; ?>/<?php echo \Core\Helpers\slugify($project['titre']); ?>.html">Voir le projet</a>
+            </div>
+        </div>
+    </article>
+<?php endforeach; ?>
+
+<!-- Pagination : 10 projets par page -->
+<?php if (isset($totalPages) && $totalPages > 1): ?>
+    <nav aria-label="Navigation entre les pages de projets">
+        <ul class="pagination ct-pagination" style="justify-content: center">
+            <?php if ($page > 1): ?>
+                <li class="page-item">
+                    <a class="page-link" href="projects/page/<?php echo $page - 1; ?>">Précédent</a>
+                </li>
+            <?php endif; ?>
+            <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                <li class="page-item active <?php echo ($i === $page) ? 'active' : ''; ?>">
+                    <a class="page-link" href="projects/page/<?php echo $i; ?>"><?php echo $i; ?></a>
+                </li>
+            <?php endfor; ?>
+            <?php if ($page < $totalPages): ?>
+                <li class="page-item">
+                    <a class="page-link" href="projects/page/<?php echo $page + 1; ?>">Suivant</a>
+                </li>
+            <?php endif; ?>
+        </ul>
+    </nav>
+<?php endif; ?>
+</file>
+
+<file path="app/controllers/projectsController.php">
+<?php
+
+namespace App\Controllers\ProjectsController;
+
+use \PDO;
+use \App\Models\ProjectsModel;
+use \App\Models\CreatifsModel;
+use \App\Models\TagsModel;
+
+include_once '../app/models/projectsModel.php';
+include_once '../app/models/creatifsModel.php';
+include_once '../app/models/tagsModel.php';
+
+
+function indexAction(PDO $connexion): void
+{
+    //Paramètres de pagination
+    $limit = 10;
+    $page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int)$_GET['page'] : 1;
+    if ($page < 1) {
+        $page = 1;
+    }
+    $offset = ($page - 1) * $limit;
+    //Récupération des projets et du total
+    $projects = ProjectsModel\findAll($connexion, $limit, $offset);
+    $creatifs = CreatifsModel\findAll($connexion);
+    $tags = TagsModel\findAll($connexion);
+    $totalProjects = ProjectsModel\countAll($connexion);
+    $totalPages = (int) ceil($totalProjects / $limit);
+
+    global $content, $title, $showHero;
+    $showHero = true;
+    ob_start();
+    include '../app/views/projects/index.php';
+    $content = ob_get_clean();
+    include '../app/views/templates/default.php';
+}
+
+
+function showAction(PDO $connexion, int $id)
+{
+    $project = ProjectsModel\findOneById($connexion, $id);
+    $creatifs = CreatifsModel\findAll($connexion);
+    $tags = TagsModel\findAll($connexion);
+    $projectTags = ProjectsModel\findTagsByProjectId($connexion, $id); //Liste des tags du projet
+
+    if (!$project) {
+        header('Location: ' . PUBLIC_BASE_URL);
+        exit();
+    }
+
+    global $content, $title, $showHero;
+    $showHero = true;
+    $title = $project['titre'];
+
+    ob_start();
+    include '../app/views/projects/show.php';
+    $content = ob_get_clean();
+    include '../app/views/templates/default.php';
+}
+
+
+//-----------------CRUD-------------
+
+//Affiche le formulaire
+function addFormAction(PDO $connexion)
+{
+    $project = [
+        'id' => null,
+        'titre' => '',
+        'texte' => '',
+        'image' => '',
+        'creatif' => null
+    ];
+
+    $isEdit = false;
+    $slug = '';
+    $formAction = "projects/add/insert.html";
+
+
+    $creatifs = CreatifsModel\findAll($connexion);
+    $tags = TagsModel\findAll($connexion); // Tous les tags
+    $projectTagIds = []; // Aucun tag coché au départ
+
+    global $content, $title, $showHero;
+    $showHero = false;
+    $title = "Ajouter un projet";
+
+    ob_start();
+    include '../app/views/projects/form.php';
+    $content = ob_get_clean();
+    include '../app/views/templates/default.php';
+}
+
+//Traite l'insertion puis redirige vers l'accueil
+function addInsertAction(PDO $connexion, array $data, array $files)
+{
+    //Gestion basique du nom d'image
+    $imageName = 'default.jpg';
+    if (!empty($files['image']['name'])) {
+        $imageName = $files['image']['name'];
+        move_uploaded_file($files['image']['tmp_name'], 'images/' . $imageName);
+    }
+
+    $projectData = [
+        'titre'   => $data['title'],
+        'texte'   => $data['text'],
+        'image'   => $imageName,
+        'creatif' => (int)$data['category_id']
+    ];
+
+
+    $tagIds = $data['tags'] ?? []; //Récupère le tableau des cases cochées (ou tableau vide si rien coché)
+
+    ProjectsModel\insertOne($connexion, $projectData, $tagIds);
+
+    //Redirection vers l'accueil
+    header('Location: ' . PUBLIC_BASE_URL);
+    exit();
+}
+
+//Affiche le formulaire d'édition
+function editFormAction(PDO $connexion, int $id)
+{
+
+    $project = ProjectsModel\findOneById($connexion, $id);
+    $creatifs = CreatifsModel\findAll($connexion);
+
+    $tags = TagsModel\findAll($connexion);
+    $projectTagIds = ProjectsModel\findTagIdsByProjectId($connexion, $id); //Tags déjà associés
+
+    $isEdit = true;
+    $slug = \Core\Helpers\slugify($project['titre']);
+    $formAction = "projects/{$project['id']}/{$slug}/edit/update.html";
+
+    global $content, $title;
+    $title = "Éditer le projet";
+
+    ob_start();
+    include '../app/views/projects/form.php';
+    $content = ob_get_clean();
+    include '../app/views/templates/default.php';
+}
+
+//Traite la modification puis redirige vers l'accueil
+function editUpdateAction(PDO $connexion, int $id, array $data, array $files)
+{
+    //Récupérer le projet actuel pour conserver l'image si aucune nouvelle n'est envoyée
+    $currentProject = ProjectsModel\findOneById($connexion, $id);
+    $imageName = $currentProject['image'];
+
+    if (!empty($files['image']['name'])) {
+        $imageName = $files['image']['name'];
+        move_uploaded_file($files['image']['tmp_name'], 'images/' . $imageName);
+    }
+
+    $projectData = [
+        'titre'   => $data['title'],
+        'texte'   => $data['text'],
+        'image'   => $imageName,
+        'creatif' => (int)$data['category_id']
+    ];
+
+    $tagIds = $data['tags'] ?? [];
+
+    ProjectsModel\updateOne($connexion, $id, $projectData, $tagIds);
+
+    header('Location: ' . PUBLIC_BASE_URL);
+    exit();
+}
+
+//Supprime un projet puis redirige
+function deleteAction(PDO $connexion, int $id)
+{
+
+    include_once '../app/models/projectsModel.php';
+    try {
+        //Supprimer le projet via le modèle (qui supprime aussi les tags liés)
+        $success = ProjectsModel\deleteOne($connexion, $id);
+
+        if (!$success) {
+            //message d'erreur en session
+            $_SESSION['error'] = "Impossible de supprimer le projet.";
+        }
+    } catch (\PDOException $e) {
+        //Enregistrement du log d'erreur si la suppression échoue
+        error_log($e->getMessage());
+    }
+
+    header('Location: ' . PUBLIC_BASE_URL . '/projects');
+    exit();
 }
 </file>
 

@@ -75,11 +75,11 @@ function addFormAction(PDO $connexion)
 
     $isEdit = false;
     $slug = '';
-    $formAction = "projects/add/insert.html";
+    $formAction = "projects/create/insert.html";
 
 
     $creatifs = CreatifsModel\findAll($connexion);
-    $tags = ProjectsModel\findAllTags($connexion); // Tous les tags
+    $tags = TagsModel\findAll($connexion); // Tous les tags
     $projectTagIds = []; // Aucun tag coché au départ
 
     global $content, $title, $showHero;
@@ -126,7 +126,7 @@ function editFormAction(PDO $connexion, int $id)
     $project = ProjectsModel\findOneById($connexion, $id);
     $creatifs = CreatifsModel\findAll($connexion);
 
-    $tags = ProjectsModel\findAllTags($connexion);
+    $tags = TagsModel\findAll($connexion);
     $projectTagIds = ProjectsModel\findTagIdsByProjectId($connexion, $id); //Tags déjà associés
 
     $isEdit = true;

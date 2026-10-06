@@ -44,14 +44,6 @@ function findOneById(PDO $connexion, int $id)
     return $rs->fetch(PDO::FETCH_ASSOC);
 }
 
-//Récupère la liste de TOUS les tags disponibles pour le formulaire
-function findAllTags(PDO $connexion): array
-{
-    $sql = "SELECT * 
-            FROM tags 
-            ORDER BY nom ASC;";
-    return $connexion->query($sql)->fetchAll(PDO::FETCH_ASSOC);
-}
 
 //Récupère les IDs des tags associés à un projet donné
 function findTagIdsByProjectId(PDO $connexion, int $projectId): array

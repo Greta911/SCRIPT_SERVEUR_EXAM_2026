@@ -20,7 +20,7 @@ RewriteRule ^projects/page/([0-9]+)$ index.php?projects=index&page=$1 [QSA,L]
 # Formulaire d'ajout
 RewriteRule ^projects/add/form\.html$ index.php?projects=addForm [QSA,L]
 # Action d'insertion
-RewriteRule ^projects/add/insert\.html$ index.php?projects=addInsert [QSA,L]
+RewriteRule ^projects/create/insert\.html$ index.php?projects=addInsert [QSA,L]
 
 # MODIFICATION D'UN PROJET
 # Formulaire de modification
